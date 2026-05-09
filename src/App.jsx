@@ -1,264 +1,350 @@
-import { useEffect, useState } from 'react'
-import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion'
+import { useMemo, useState } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import {
   Clock3,
   CupSoda,
-  Dessert,
-  Camera,
-  Leaf,
+  Instagram,
   MapPin,
+  Menu,
   MoonStar,
   PhoneCall,
   Sparkles,
-  Users,
+  TreePalm,
   Utensils,
+  X,
 } from 'lucide-react'
 
 const navLinks = [
   { href: '#about', label: 'About' },
-  { href: '#menu', label: 'Signature Menu' },
+  { href: '#menu', label: 'Menu' },
   { href: '#experience', label: 'Experience' },
   { href: '#gallery', label: 'Gallery' },
   { href: '#visit', label: 'Visit' },
 ]
 
 const stats = [
-  { value: '6K+', label: 'Happy Customers' },
-  { value: '50+', label: 'Signature Dishes' },
-  { value: 'Open till 2 AM', label: 'Every Day' },
+  { value: '6K+', label: 'Reviews' },
+  { value: 'Open Till 2 AM', label: 'Night Hours' },
+  { value: 'Premium Vegetarian Café', label: 'Cuisine Style' },
+  { value: 'Signature Tea Collection', label: 'Specialty' },
 ]
 
-const menuItems = [
+const menuCategories = [
   {
-    name: 'Chocolate Churros',
-    description: 'Crisp golden churros dusted with cinnamon and warm chocolate dip.',
-    price: '₹295',
-    image:
-      'https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?auto=format&fit=crop&w=900&q=80',
+    key: 'breakfast',
+    label: 'Breakfast',
+    items: [
+      { name: 'Croissants', price: '₹95', image: 'https://images.unsplash.com/photo-1555507036-ab794f4afe5b?auto=format&fit=crop&w=1200&q=80' },
+      { name: 'Vegetable Oats', price: '₹175', image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=1200&q=80' },
+      { name: 'Oats Pancake', price: '₹175', image: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=1200&q=80' },
+      { name: 'Indian Breakfast', price: '₹350', image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=1200&q=80' },
+      { name: 'American Breakfast', price: '₹375', image: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=1200&q=80' },
+    ],
   },
   {
-    name: 'Cheese Fondue',
-    description: 'Silky molten cheese served with artisan bread and roasted vegetables.',
-    price: '₹460',
-    image:
-      'https://images.unsplash.com/photo-1525755662778-989d0524087e?auto=format&fit=crop&w=900&q=80',
+    key: 'tea',
+    label: 'Tea Specials',
+    items: [
+      { name: 'Kashmiri Zafran', price: 'Ask at Café', image: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=1200&q=80', tea: true },
+      { name: 'Vanilla Chai', price: 'Ask at Café', image: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=1200&q=80', tea: true },
+      { name: 'Irani Chai', price: 'Ask at Café', image: 'https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=1200&q=80', tea: true },
+      { name: 'Sulemani Tea', price: 'Ask at Café', image: 'https://images.unsplash.com/photo-1515823064-d6e0c04616a7?auto=format&fit=crop&w=1200&q=80', tea: true },
+      { name: 'Kashmiri Kahwa', price: 'Ask at Café', image: 'https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?auto=format&fit=crop&w=1200&q=80', tea: true },
+      { name: 'Twings ‘N’ Berries', price: 'Ask at Café', image: 'https://images.unsplash.com/photo-1558160074-4d7d8bdf4256?auto=format&fit=crop&w=1200&q=80', tea: true },
+    ],
   },
   {
-    name: 'Crispy Lotus Root',
-    description: 'Thin-cut lotus root tossed in aromatic spices and sea salt flakes.',
-    price: '₹280',
-    image:
-      'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=900&q=80',
+    key: 'coffee',
+    label: 'Coffee',
+    items: [
+      { name: 'Madras Filter Coffee', price: '₹125', image: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1200&q=80' },
+      { name: 'Affogato', price: '₹150', image: 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=1200&q=80' },
+      { name: 'Coffee De Irish', price: '₹175', image: 'https://images.unsplash.com/photo-1515442261605-65987783cb6a?auto=format&fit=crop&w=1200&q=80' },
+      { name: 'Nutella Cappuccino', price: 'Ask at Café', image: 'https://images.unsplash.com/photo-1534778101976-62847782c213?auto=format&fit=crop&w=1200&q=80' },
+      { name: 'Hazelnut Cappuccino', price: 'Ask at Café', image: 'https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&w=1200&q=80' },
+      { name: 'Mocaccino', price: 'Ask at Café', image: 'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=1200&q=80' },
+    ],
   },
   {
-    name: 'Hot Chocolate',
-    description: 'Velvety dark cocoa with hand-whipped cream and cocoa nibs.',
-    price: '₹240',
-    image:
-      'https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=900&q=80',
+    key: 'italian',
+    label: 'Pasta & Italian',
+    items: [
+      { name: 'Basil Pesto Pasta', price: '₹395', image: 'https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=1200&q=80' },
+      { name: 'Tomato & Cream Pasta', price: '₹395', image: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?auto=format&fit=crop&w=1200&q=80' },
+      { name: 'Alfredo Pasta', price: '₹450', image: 'https://images.unsplash.com/photo-1645112411341-6c4fd023714a?auto=format&fit=crop&w=1200&q=80' },
+      { name: 'Arrabbiata Pasta', price: '₹450', image: 'https://images.unsplash.com/photo-1556761223-4c4282c73f77?auto=format&fit=crop&w=1200&q=80' },
+      { name: 'Mac N Cheese', price: '₹400', image: 'https://images.unsplash.com/photo-1543339494-b4cd4f7ba686?auto=format&fit=crop&w=1200&q=80' },
+    ],
   },
   {
-    name: 'Pasta & Sizzlers',
-    description: 'Comfort pasta and sizzling platters designed for sharing moments.',
-    price: '₹520',
-    image:
-      'https://images.unsplash.com/photo-1551183053-bf91a1d81141?auto=format&fit=crop&w=900&q=80',
+    key: 'asian',
+    label: 'Asian',
+    items: [
+      { name: 'Chilli Basil Vegetables', price: '₹350', image: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=1200&q=80' },
+      { name: 'Thai Curry', price: '₹395', image: 'https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?auto=format&fit=crop&w=1200&q=80' },
+      { name: 'Burnt Garlic Noodles', price: '₹275', image: 'https://images.unsplash.com/photo-1617093727343-374698b1b08d?auto=format&fit=crop&w=1200&q=80' },
+      { name: 'Schezwan Rice/Noodles', price: '₹295', image: 'https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=1200&q=80' },
+    ],
+  },
+  {
+    key: 'chillers',
+    label: 'Chillers',
+    items: [
+      { name: 'Berry Berry Chiller', price: '₹195', image: 'https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=1200&q=80' },
+      { name: 'Mango Tango Chiller', price: '₹195', image: 'https://images.unsplash.com/photo-1622597467836-f3285f2131b8?auto=format&fit=crop&w=1200&q=80' },
+      { name: 'Kiwi Green Apple Mint Chiller', price: '₹195', image: 'https://images.unsplash.com/photo-1534353473418-4cfa6c56fd38?auto=format&fit=crop&w=1200&q=80' },
+      { name: 'Jasmine Lychee Ice Tea', price: '₹195', image: 'https://images.unsplash.com/photo-1481671703460-040cb8a2d909?auto=format&fit=crop&w=1200&q=80' },
+      { name: 'Ginger Honey Lime', price: '₹195', image: 'https://images.unsplash.com/photo-1525385133512-2f3bdd039054?auto=format&fit=crop&w=1200&q=80' },
+    ],
   },
 ]
 
-const experiences = [
-  {
-    title: 'Cozy Ambience',
-    text: 'Soft lights, warm wood, and curated music crafted for calm conversations.',
-    icon: Sparkles,
-  },
-  {
-    title: 'Perfect for Hangouts',
-    text: 'Comfortable seating and sharing plates that make every meetup effortless.',
-    icon: Users,
-  },
-  {
-    title: 'Late Night Café',
-    text: 'Open till 2 AM for post-work cravings and unhurried midnight tea rituals.',
-    icon: MoonStar,
-  },
-  {
-    title: 'Vegetarian Friendly',
-    text: 'Thoughtfully curated vegetarian specials with global café inspirations.',
-    icon: Leaf,
-  },
-  {
-    title: 'Premium Desserts',
-    text: 'From churros to indulgent chocolate creations, every bite feels special.',
-    icon: Dessert,
-  },
+const experienceCards = [
+  { title: 'Late Night Escape', text: 'Wind down under warm pendants, mellow playlists, and city-night reflections.' },
+  { title: 'Cozy Conversations', text: 'Comfort seating zones designed for long talks and meaningful catch-ups.' },
+  { title: 'Work & Chill', text: 'A calm corner for laptops, meetings, and focused sips with ambient lighting.' },
+  { title: 'Premium Tea Rituals', text: 'Elegant brews steeped with aroma, served with craftsmanship and care.' },
+  { title: 'Vegetarian Gourmet', text: 'Global vegetarian plates with a luxury café touch and comforting depth.' },
+  { title: 'Aesthetic Ambience', text: 'Cinematic corners and polished details made for memorable nights.' },
 ]
 
 const galleryImages = [
-  'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1000&q=80',
-  'https://images.unsplash.com/photo-1521017432531-fbd92d768814?auto=format&fit=crop&w=1000&q=80',
-  'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1000&q=80',
-  'https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=1000&q=80',
-  'https://images.unsplash.com/photo-1481391032119-d89fee407e44?auto=format&fit=crop&w=1000&q=80',
-  'https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&w=1000&q=80',
+  'https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&w=1200&q=80',
+  'https://images.unsplash.com/photo-1453614512568-c4024d13c247?auto=format&fit=crop&w=1200&q=80',
+  'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=80',
+  'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1200&q=80',
+  'https://images.unsplash.com/photo-1555507036-ab794f4afe5b?auto=format&fit=crop&w=1200&q=80',
+  'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?auto=format&fit=crop&w=1200&q=80',
+  'https://images.unsplash.com/photo-1521017432531-fbd92d768814?auto=format&fit=crop&w=1200&q=80',
+  'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=1200&q=80',
 ]
 
-const sectionAnim = {
-  initial: { opacity: 0, y: 36 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, amount: 0.25 },
-  transition: { duration: 0.7, ease: 'easeOut' },
+const sectionContainer = {
+  hidden: { opacity: 0, y: 50 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.8, staggerChildren: 0.12 },
+  },
+}
+
+const sectionItem = {
+  hidden: { opacity: 0, y: 24 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+}
+
+function AmbientParticles() {
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      {[...Array(14)].map((_, idx) => (
+        <span
+          key={`particle-${idx}`}
+          className="ambient-particle"
+          style={{
+            left: `${(idx * 17) % 100}%`,
+            animationDelay: `${idx * 0.7}s`,
+            animationDuration: `${7 + (idx % 6)}s`,
+          }}
+        />
+      ))}
+    </div>
+  )
 }
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true)
-  const [isScrolled, setIsScrolled] = useState(false)
-  const { scrollYProgress } = useScroll()
-  const heroY = useTransform(scrollYProgress, [0, 0.25], [0, 90])
+  const [activeCategory, setActiveCategory] = useState(menuCategories[0].key)
+  const [mobileNavOpen, setMobileNavOpen] = useState(false)
+  const { scrollY } = useScroll()
+  const heroY = useTransform(scrollY, [0, 500], [0, 70])
+  const heroScale = useTransform(scrollY, [0, 600], [1, 1.06])
 
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 1200)
-    return () => clearTimeout(timer)
-  }, [])
-
-  useEffect(() => {
-    const onScroll = () => setIsScrolled(window.scrollY > 24)
-    onScroll()
-    window.addEventListener('scroll', onScroll)
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+  const activeMenuItems = useMemo(
+    () => menuCategories.find((category) => category.key === activeCategory)?.items ?? [],
+    [activeCategory],
+  )
 
   return (
-    <div className="bg-[#F8F5F0] text-[#1F3A32]">
-      <AnimatePresence>
-        {isLoading && (
-          <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-[#F8F5F0]"
-            initial={{ opacity: 1 }}
-            exit={{ opacity: 0, transition: { duration: 0.5 } }}
-          >
-            <div className="loader-ring" aria-label="Loading" />
-          </motion.div>
-        )}
-      </AnimatePresence>
+    <div className="relative min-h-screen overflow-x-hidden bg-[#0F1714] text-[#F5EFE6]">
+      <div className="glow-orb glow-orb-left" />
+      <div className="glow-orb glow-orb-right" />
 
-      <header
-        className={`fixed top-0 z-40 w-full transition-all duration-300 ${
-          isScrolled ? 'bg-[#1F3A32]/70 py-3 shadow-xl backdrop-blur-xl' : 'bg-transparent py-5'
-        }`}
-      >
-        <nav className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 text-sm md:px-8">
-          <a href="#home" className="font-display text-xl text-[#F8F5F0]">
+      <header className="fixed top-0 z-50 w-full border-b border-white/5 bg-[#0F1714]/45 backdrop-blur-xl">
+        <nav className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-4 md:px-8">
+          <a href="#home" className="font-display text-xl tracking-wide text-[#F5EFE6]">
             Tea Villa Cafe
           </a>
-          <div className="hidden items-center gap-6 text-[#F8F5F0]/90 md:flex">
+
+          <div className="hidden items-center gap-8 text-sm text-[#F5EFE6]/80 lg:flex">
             {navLinks.map((item) => (
-              <a key={item.href} href={item.href} className="hover:text-[#C9A86A] transition-colors">
+              <a key={item.href} href={item.href} className="transition hover:text-[#C6A46C]">
                 {item.label}
               </a>
             ))}
           </div>
+
+          <button
+            type="button"
+            onClick={() => setMobileNavOpen((prev) => !prev)}
+            className="inline-flex rounded-full border border-white/20 p-2 text-[#F5EFE6] lg:hidden"
+            aria-label="Toggle navigation"
+          >
+            {mobileNavOpen ? <X size={18} /> : <Menu size={18} />}
+          </button>
         </nav>
+
+        {mobileNavOpen && (
+          <div className="mx-4 mb-4 rounded-2xl border border-white/10 bg-[#16352B]/85 p-4 shadow-2xl backdrop-blur-xl lg:hidden">
+            <div className="flex flex-col gap-3 text-sm text-[#F5EFE6]/90">
+              {navLinks.map((item) => (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileNavOpen(false)}
+                  className="rounded-lg px-2 py-1 transition hover:bg-white/10"
+                >
+                  {item.label}
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
       </header>
 
-      <section
-        id="home"
-        className="relative flex min-h-screen items-center overflow-hidden px-4 pb-14 pt-28 md:px-8"
-      >
-        <motion.div style={{ y: heroY }} className="absolute inset-0">
-          <img
-            src="https://images.unsplash.com/photo-1453614512568-c4024d13c247?auto=format&fit=crop&w=1920&q=80"
-            alt="Tea Villa Cafe ambience"
-            className="h-full w-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#1F3A32]/72 via-[#1F3A32]/55 to-[#1F3A32]/70" />
-        </motion.div>
-
-        <div className="pointer-events-none absolute -left-16 top-24 h-52 w-52 rounded-full bg-[#C9A86A]/30 blur-3xl" />
-        <div className="pointer-events-none absolute bottom-16 right-4 h-44 w-44 rounded-full bg-[#7B4F2A]/30 blur-3xl" />
+      <section id="home" className="relative flex min-h-screen items-center justify-center overflow-hidden px-4 pb-16 pt-28 md:px-8">
+        <motion.img
+          style={{ y: heroY, scale: heroScale }}
+          src="https://images.unsplash.com/photo-1466978913421-dad2ebd01d17?auto=format&fit=crop&w=2000&q=80"
+          alt="Tea Villa Cafe exterior at night"
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0F1714]/80 via-[#0F1714]/75 to-[#0F1714]/95" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(198,164,108,0.2),transparent_32%),radial-gradient(circle_at_80%_70%,rgba(65,89,75,0.35),transparent_45%)]" />
+        <AmbientParticles />
 
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35, duration: 0.8 }}
-          className="relative mx-auto w-full max-w-3xl rounded-3xl border border-white/20 bg-white/10 p-7 text-center text-[#F8F5F0] shadow-2xl backdrop-blur-xl md:p-12"
+          transition={{ duration: 0.9, ease: 'easeOut' }}
+          className="glass-panel relative mx-auto w-full max-w-4xl p-7 text-center md:p-12"
         >
-          <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#C9A86A]/60 bg-[#C9A86A]/15 px-4 py-1 text-xs uppercase tracking-[0.28em]">
-            <CupSoda size={14} /> Premium Tea Lounge
+          <p className="mx-auto inline-flex items-center gap-2 rounded-full border border-[#C6A46C]/50 bg-[#C6A46C]/10 px-4 py-1 text-[11px] uppercase tracking-[0.28em] text-[#F5EFE6]/90">
+            <MoonStar size={14} /> Chennai Night Café
           </p>
-          <h1 className="font-display text-4xl leading-tight md:text-6xl">Brewed for Conversations</h1>
-          <p className="mx-auto mt-5 max-w-2xl text-sm text-[#F8F5F0]/90 md:text-lg">
-            A cozy destination for handcrafted teas, desserts, and unforgettable café moments.
+          <h1 className="font-display mt-6 text-4xl leading-tight text-[#F5EFE6] md:text-7xl">
+            Where Conversations Brew
+          </h1>
+          <p className="mx-auto mt-5 max-w-3xl text-sm leading-relaxed text-[#F5EFE6]/80 md:text-lg">
+            Late-night tea rituals, handcrafted desserts, warm conversations, and unforgettable café
+            moments in the heart of Chennai.
           </p>
-          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-            <a
-              href="#menu"
-              className="rounded-full bg-[#C9A86A] px-7 py-3 text-sm font-medium text-[#1F3A32] transition hover:-translate-y-0.5 hover:shadow-lg"
-            >
+          <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
+            <a href="#menu" className="lux-button-primary">
               Explore Menu
             </a>
-            <a
-              href="#visit"
-              className="rounded-full border border-[#F8F5F0]/70 bg-transparent px-7 py-3 text-sm font-medium text-[#F8F5F0] transition hover:bg-[#F8F5F0]/15"
-            >
-              Visit Us
+            <a href="#visit" className="lux-button-secondary">
+              Visit Cafe
             </a>
           </div>
         </motion.div>
       </section>
 
-      <main className="mx-auto w-full max-w-6xl px-4 pb-14 md:px-8">
-        <motion.section id="about" {...sectionAnim} className="grid gap-10 py-14 md:grid-cols-2 md:py-20">
-          <div className="overflow-hidden rounded-3xl shadow-xl">
+      <main className="mx-auto w-full max-w-7xl px-4 md:px-8">
+        <motion.section
+          id="about"
+          variants={sectionContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.25 }}
+          className="grid gap-10 py-18 lg:grid-cols-[1.1fr_1fr]"
+        >
+          <motion.div variants={sectionItem} className="overflow-hidden rounded-[28px] border border-white/10">
             <img
-              src="https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&w=1200&q=80"
-              alt="Friends enjoying tea at cafe"
+              src="https://images.unsplash.com/photo-1579027989536-b7b1f875659b?auto=format&fit=crop&w=1600&q=80"
+              alt="Tea Villa cinematic seating"
               className="h-full min-h-[320px] w-full object-cover"
             />
-          </div>
-          <div className="flex flex-col justify-center">
-            <p className="text-xs uppercase tracking-[0.26em] text-[#7B4F2A]">About Tea Villa Cafe</p>
-            <h2 className="font-display mt-3 text-3xl leading-tight md:text-5xl">Your everyday escape in Chennai</h2>
-            <p className="mt-5 text-[#1F3A32]/80">
-              Tea Villa Cafe is designed for meaningful pauses—whether it is work sessions over artisanal tea,
-              dessert dates, or long late-night conversations with friends. Every corner is crafted to feel warm,
-              calm, and thoughtfully premium.
+          </motion.div>
+
+          <motion.div variants={sectionItem} className="space-y-5">
+            <p className="section-label">About Tea Villa</p>
+            <h2 className="font-display text-3xl leading-tight md:text-5xl">
+              A premium tea lounge crafted for slow evenings
+            </h2>
+            <p className="text-[#F5EFE6]/78">
+              Tea Villa Cafe is designed for slow evenings, meaningful conversations, work sessions,
+              comfort food, and aesthetic late-night experiences.
             </p>
-            <div className="mt-8 grid gap-3 sm:grid-cols-3">
+            <div className="grid gap-3 sm:grid-cols-2">
               {stats.map((stat) => (
-                <div key={stat.label} className="rounded-2xl border border-[#1F3A32]/10 bg-white p-4 shadow-sm">
-                  <p className="font-display text-xl text-[#1F3A32]">{stat.value}</p>
-                  <p className="mt-1 text-xs text-[#1F3A32]/70">{stat.label}</p>
-                </div>
+                <article key={stat.label} className="glass-card p-4">
+                  <p className="font-display text-xl text-[#F5EFE6]">{stat.value}</p>
+                  <p className="mt-1 text-xs text-[#F5EFE6]/65">{stat.label}</p>
+                </article>
               ))}
             </div>
-          </div>
+          </motion.div>
         </motion.section>
 
-        <motion.section id="menu" {...sectionAnim} className="py-14 md:py-20">
-          <div className="text-center">
-            <p className="text-xs uppercase tracking-[0.26em] text-[#7B4F2A]">Signature Menu</p>
-            <h2 className="font-display mt-3 text-3xl md:text-5xl">Crafted with comfort and character</h2>
-          </div>
-          <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {menuItems.map((item) => (
+        <motion.section
+          id="menu"
+          variants={sectionContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          className="py-18"
+        >
+          <motion.div variants={sectionItem} className="text-center">
+            <p className="section-label">Signature Menu</p>
+            <h2 className="font-display mt-3 text-3xl md:text-5xl">Curated from our real café menu</h2>
+          </motion.div>
+
+          <motion.div variants={sectionItem} className="mt-8 flex flex-wrap justify-center gap-2">
+            {menuCategories.map((category) => (
+              <button
+                key={category.key}
+                type="button"
+                onClick={() => setActiveCategory(category.key)}
+                className={`rounded-full border px-4 py-2 text-xs uppercase tracking-[0.2em] transition ${
+                  activeCategory === category.key
+                    ? 'border-[#C6A46C] bg-[#C6A46C]/20 text-[#F5EFE6]'
+                    : 'border-white/20 bg-[#16352B]/20 text-[#F5EFE6]/75 hover:border-[#C6A46C]/50'
+                }`}
+              >
+                {category.label}
+              </button>
+            ))}
+          </motion.div>
+
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {activeMenuItems.map((item, index) => (
               <motion.article
                 key={item.name}
-                whileHover={{ y: -8 }}
-                className="group overflow-hidden rounded-3xl border border-[#1F3A32]/10 bg-white shadow-sm transition-shadow hover:shadow-xl"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.45, delay: index * 0.05 }}
+                whileHover={{ y: -6 }}
+                className="menu-card group"
               >
-                <div className="overflow-hidden">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="h-56 w-full object-cover transition duration-500 group-hover:scale-105"
-                  />
+                <div className="menu-card-image" style={{ backgroundImage: `url(${item.image})` }} />
+                <div className="relative z-10">
+                  <div className="mb-3 flex items-center justify-between text-[11px] uppercase tracking-[0.24em] text-[#F5EFE6]/55">
+                    <span>{menuCategories.find((category) => category.key === activeCategory)?.label}</span>
+                    <span className="inline-flex items-center gap-1 text-[#C6A46C]/90">
+                      <CupSoda size={12} /> Signature
+                    </span>
+                  </div>
+                  <h3 className="font-display text-2xl leading-tight text-[#F5EFE6]">{item.name}</h3>
+                  <p className="mt-5 text-sm tracking-wide text-[#C6A46C]">{item.price}</p>
                 </div>
-                <div className="space-y-2 p-5">
-                  <h3 className="font-display text-2xl text-[#1F3A32]">{item.name}</h3>
-                  <p className="text-sm text-[#1F3A32]/75">{item.description}</p>
-                  <p className="pt-2 text-sm font-semibold tracking-widest text-[#7B4F2A]">{item.price}</p>
-                </div>
+
+                {item.tea && (
+                  <div className="pointer-events-none absolute right-5 top-4 opacity-80">
+                    <span className="steam steam-1" />
+                    <span className="steam steam-2" />
+                    <span className="steam steam-3" />
+                  </div>
+                )}
               </motion.article>
             ))}
           </div>
@@ -267,58 +353,75 @@ function App() {
 
       <motion.section
         id="experience"
-        {...sectionAnim}
-        className="bg-[#1F3A32] px-4 py-14 text-[#F8F5F0] md:px-8 md:py-20"
+        variants={sectionContainer}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        className="relative overflow-hidden bg-[#16352B]/35 px-4 py-20 md:px-8"
       >
-        <div className="mx-auto w-full max-w-6xl">
-          <div className="text-center">
-            <p className="text-xs uppercase tracking-[0.26em] text-[#C9A86A]">The Experience</p>
-            <h2 className="font-display mt-3 text-3xl md:text-5xl">Moments curated beyond the menu</h2>
-          </div>
-          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {experiences.map((item) => {
-              const Icon = item.icon
-              return (
-                <article key={item.title} className="rounded-3xl border border-[#F8F5F0]/12 bg-white/5 p-5">
-                  <div className="mb-4 inline-flex rounded-2xl border border-[#C9A86A]/50 bg-[#C9A86A]/15 p-3 shadow-[0_0_24px_rgba(201,168,106,0.35)]">
-                    <Icon size={18} className="text-[#C9A86A]" />
-                  </div>
-                  <h3 className="font-display text-2xl">{item.title}</h3>
-                  <p className="mt-2 text-sm text-[#F8F5F0]/80">{item.text}</p>
-                </article>
-              )
-            })}
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_10%_20%,rgba(198,164,108,0.18),transparent_35%),radial-gradient(circle_at_88%_80%,rgba(65,89,75,0.4),transparent_40%)]" />
+        <div className="relative mx-auto w-full max-w-7xl">
+          <motion.div variants={sectionItem} className="text-center">
+            <p className="section-label">Experience</p>
+            <h2 className="font-display mt-3 text-3xl md:text-5xl">More Than a Café</h2>
+          </motion.div>
+
+          <div className="relative mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {experienceCards.map((card) => (
+              <motion.article key={card.title} variants={sectionItem} whileHover={{ y: -6 }} className="experience-card">
+                <span className="mb-4 inline-flex rounded-2xl border border-[#C6A46C]/35 bg-[#C6A46C]/10 p-2 text-[#C6A46C]">
+                  <Sparkles size={16} />
+                </span>
+                <h3 className="font-display text-2xl">{card.title}</h3>
+                <p className="mt-2 text-sm text-[#F5EFE6]/75">{card.text}</p>
+              </motion.article>
+            ))}
           </div>
         </div>
       </motion.section>
 
-      <main className="mx-auto w-full max-w-6xl px-4 py-14 md:px-8 md:py-20">
-        <motion.section id="gallery" {...sectionAnim}>
-          <div className="text-center">
-            <p className="text-xs uppercase tracking-[0.26em] text-[#7B4F2A]">Gallery</p>
-            <h2 className="font-display mt-3 text-3xl md:text-5xl">Aesthetic café frames</h2>
-          </div>
-          <div className="gallery-masonry mt-10">
+      <main className="mx-auto w-full max-w-7xl px-4 md:px-8">
+        <motion.section
+          id="gallery"
+          variants={sectionContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          className="py-18"
+        >
+          <motion.div variants={sectionItem} className="text-center">
+            <p className="section-label">Gallery</p>
+            <h2 className="font-display mt-3 text-3xl md:text-5xl">Cinematic café moments</h2>
+          </motion.div>
+
+          <motion.div variants={sectionItem} className="gallery-masonry mt-10">
             {galleryImages.map((image, index) => (
-              <div key={image} className="mb-4 overflow-hidden rounded-3xl">
-                <img
-                  src={image}
-                  alt={`Tea Villa gallery ${index + 1}`}
-                  className="w-full transition duration-500 hover:scale-105"
-                />
-              </div>
+              <figure key={image} className="gallery-frame">
+                <img src={image} alt={`Tea Villa gallery ${index + 1}`} className="gallery-image" />
+                <figcaption className="gallery-overlay">Tea Villa Cafe</figcaption>
+              </figure>
             ))}
-          </div>
+          </motion.div>
         </motion.section>
 
-        <motion.section id="visit" {...sectionAnim} className="grid gap-8 py-14 md:grid-cols-2 md:py-20">
-          <div>
-            <p className="text-xs uppercase tracking-[0.26em] text-[#7B4F2A]">Visit Us</p>
-            <h2 className="font-display mt-3 text-3xl md:text-5xl">Find your table at Tea Villa Cafe</h2>
-            <div className="mt-6 space-y-4 text-[#1F3A32]/85">
+        <motion.section
+          id="visit"
+          variants={sectionContainer}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          className="grid gap-8 py-18 lg:grid-cols-[1fr_1.1fr]"
+        >
+          <motion.div variants={sectionItem}>
+            <p className="section-label">Visit</p>
+            <h2 className="font-display mt-3 text-3xl leading-tight md:text-5xl">A warm table is waiting in T. Nagar</h2>
+
+            <div className="mt-7 space-y-4 text-[#F5EFE6]/80">
               <p className="flex items-start gap-3">
-                <MapPin className="mt-0.5 text-[#7B4F2A]" size={18} />
+                <MapPin className="mt-1 text-[#C6A46C]" size={18} />
                 <span>
+                  Tea Villa Cafe
+                  <br />
                   Old No 52/2, New No 40/2,
                   <br />
                   Thirumalai Pillai Rd,
@@ -326,67 +429,75 @@ function App() {
                   T. Nagar, Chennai 600017
                 </span>
               </p>
+
               <p className="flex items-center gap-3">
-                <PhoneCall className="text-[#7B4F2A]" size={18} /> 094440 56991
+                <PhoneCall className="text-[#C6A46C]" size={18} /> 094440 56991
               </p>
+
               <p className="flex items-center gap-3">
-                <Clock3 className="text-[#7B4F2A]" size={18} /> Open till 2 AM
+                <Clock3 className="text-[#C6A46C]" size={18} /> Open Till 2 AM
               </p>
             </div>
-            <div className="mt-7 flex flex-wrap gap-3">
+
+            <div className="mt-8 flex flex-wrap gap-3">
               <a
                 href="https://maps.google.com/?q=Tea+Villa+Cafe+T+Nagar+Chennai"
                 target="_blank"
                 rel="noreferrer"
-                className="rounded-full bg-[#1F3A32] px-6 py-3 text-sm font-medium text-[#F8F5F0] transition hover:bg-[#27483d]"
+                className="lux-button-primary"
               >
                 Get Directions
               </a>
-              <a
-                href="tel:09444056991"
-                className="rounded-full border border-[#1F3A32] bg-transparent px-6 py-3 text-sm font-medium text-[#1F3A32] transition hover:bg-[#1F3A32]/10"
-              >
-                Call Now
+              <a href="tel:09444056991" className="lux-button-secondary">
+                Reserve Table
               </a>
             </div>
-          </div>
-          <div className="overflow-hidden rounded-3xl border border-[#1F3A32]/10 bg-white p-2 shadow-lg">
-            <iframe
-              title="Tea Villa Cafe location"
-              src="https://www.google.com/maps?q=Tea+Villa+Cafe+T+Nagar+Chennai&output=embed"
-              className="h-[340px] w-full rounded-2xl border-0"
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
-          </div>
+          </motion.div>
+
+          <motion.div variants={sectionItem} className="glass-panel p-3">
+            <div className="overflow-hidden rounded-2xl border border-white/10">
+              <iframe
+                title="Tea Villa Cafe location"
+                src="https://www.google.com/maps?q=Tea+Villa+Cafe+T+Nagar+Chennai&output=embed"
+                className="h-[380px] w-full border-0"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
+          </motion.div>
         </motion.section>
       </main>
 
-      <footer className="bg-[#1F3A32] px-4 py-10 text-[#F8F5F0] md:px-8">
-        <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 border-t border-[#F8F5F0]/15 pt-8 md:flex-row md:items-center md:justify-between">
+      <footer className="border-t border-white/10 bg-[#0F1714] px-4 py-10 md:px-8">
+        <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 md:flex-row md:items-center md:justify-between">
           <div>
-            <p className="font-display text-2xl">Tea Villa Cafe</p>
-            <p className="mt-2 text-sm text-[#F8F5F0]/75">Brewed for conversations, made for memories.</p>
+            <p className="font-display text-2xl text-[#F5EFE6]">Tea Villa Cafe</p>
+            <p className="mt-2 text-sm text-[#F5EFE6]/65">Crafted for conversations.</p>
           </div>
-          <div className="flex flex-wrap gap-5 text-sm text-[#F8F5F0]/85">
+
+          <div className="flex flex-wrap gap-5 text-sm text-[#F5EFE6]/75">
             {navLinks.map((item) => (
-              <a key={item.href} href={item.href} className="hover:text-[#C9A86A] transition-colors">
+              <a key={item.href} href={item.href} className="transition hover:text-[#C6A46C]">
                 {item.label}
               </a>
             ))}
           </div>
+
           <div className="flex items-center gap-3">
             <a href="https://instagram.com" target="_blank" rel="noreferrer" className="social-pill">
-              <Camera size={16} />
+              <Instagram size={16} />
+            </a>
+            <a href="https://maps.google.com/?q=Tea+Villa+Cafe+T+Nagar+Chennai" target="_blank" rel="noreferrer" className="social-pill">
+              <MapPin size={16} />
             </a>
             <a href="https://www.zomato.com" target="_blank" rel="noreferrer" className="social-pill">
               <Utensils size={16} />
             </a>
+            <a href="#home" className="social-pill">
+              <TreePalm size={16} />
+            </a>
           </div>
         </div>
-        <p className="mx-auto mt-8 w-full max-w-6xl text-xs text-[#F8F5F0]/65">
-          © {new Date().getFullYear()} Tea Villa Cafe. All rights reserved.
-        </p>
       </footer>
     </div>
   )
