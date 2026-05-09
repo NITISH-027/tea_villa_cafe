@@ -109,14 +109,38 @@ const experienceCards = [
 ]
 
 const galleryImages = [
-  'https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&w=1200&q=80',
-  'https://images.unsplash.com/photo-1453614512568-c4024d13c247?auto=format&fit=crop&w=1200&q=80',
-  'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=80',
-  'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1200&q=80',
-  'https://images.unsplash.com/photo-1555507036-ab794f4afe5b?auto=format&fit=crop&w=1200&q=80',
-  'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?auto=format&fit=crop&w=1200&q=80',
-  'https://images.unsplash.com/photo-1521017432531-fbd92d768814?auto=format&fit=crop&w=1200&q=80',
-  'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=1200&q=80',
+  {
+    src: 'https://images.unsplash.com/photo-1445116572660-236099ec97a0?auto=format&fit=crop&w=1200&q=80',
+    alt: 'Handcrafted latte on wooden café table',
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1453614512568-c4024d13c247?auto=format&fit=crop&w=1200&q=80',
+    alt: 'Cozy café exterior at night with warm lights',
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1200&q=80',
+    alt: 'Barista pouring fresh coffee in moody light',
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=1200&q=80',
+    alt: 'Close-up of premium coffee beans and cup',
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1555507036-ab794f4afe5b?auto=format&fit=crop&w=1200&q=80',
+    alt: 'Fresh buttery croissants plated for breakfast',
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?auto=format&fit=crop&w=1200&q=80',
+    alt: 'Creamy pasta served in dark luxury presentation',
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1521017432531-fbd92d768814?auto=format&fit=crop&w=1200&q=80',
+    alt: 'Tea being poured into glass cup with steam',
+  },
+  {
+    src: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=1200&q=80',
+    alt: 'Dessert plate styled with warm café ambience',
+  },
 ]
 
 const sectionContainer = {
@@ -140,6 +164,7 @@ function AmbientParticles() {
         <span
           key={`particle-${idx}`}
           className="ambient-particle"
+          aria-hidden="true"
           style={{
             left: `${(idx * 17) % 100}%`,
             animationDelay: `${idx * 0.7}s`,
@@ -395,9 +420,9 @@ function App() {
           </motion.div>
 
           <motion.div variants={sectionItem} className="gallery-masonry mt-10">
-            {galleryImages.map((image, index) => (
-              <figure key={image} className="gallery-frame">
-                <img src={image} alt={`Tea Villa gallery ${index + 1}`} className="gallery-image" />
+            {galleryImages.map((image) => (
+              <figure key={image.src} className="gallery-frame" tabIndex={0}>
+                <img src={image.src} alt={image.alt} className="gallery-image" />
                 <figcaption className="gallery-overlay">Tea Villa Cafe</figcaption>
               </figure>
             ))}
@@ -493,7 +518,7 @@ function App() {
             <a href="https://www.zomato.com" target="_blank" rel="noreferrer" className="social-pill">
               <Utensils size={16} />
             </a>
-            <a href="#home" className="social-pill">
+            <a href="#home" className="social-pill" aria-label="Scroll to top">
               <TreePalm size={16} />
             </a>
           </div>

@@ -267,6 +267,19 @@ body {
   opacity: 1;
 }
 
+.gallery-frame:focus-visible {
+  outline: 2px solid #c6a46c;
+  outline-offset: 2px;
+}
+
+.gallery-frame:focus-visible .gallery-image {
+  transform: scale(1.07);
+}
+
+.gallery-frame:focus-visible .gallery-overlay {
+  opacity: 1;
+}
+
 .social-pill {
   display: inline-flex;
   width: 2.25rem;
