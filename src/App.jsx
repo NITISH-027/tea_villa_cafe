@@ -2,8 +2,8 @@ import { useMemo, useState } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import {
   Clock3,
+  Camera,
   CupSoda,
-  Instagram,
   MapPin,
   Menu,
   MoonStar,
@@ -485,7 +485,7 @@ function App() {
 
           <div className="flex items-center gap-3">
             <a href="https://instagram.com" target="_blank" rel="noreferrer" className="social-pill">
-              <Instagram size={16} />
+              <Camera size={16} />
             </a>
             <a href="https://maps.google.com/?q=Tea+Villa+Cafe+T+Nagar+Chennai" target="_blank" rel="noreferrer" className="social-pill">
               <MapPin size={16} />
