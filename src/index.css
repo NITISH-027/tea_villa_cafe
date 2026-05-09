@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600&display=swap');
+@import 'tailwindcss';
+
+:root {
+  color: #1f3a32;
+  background: #f8f5f0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: #f8f5f0;
+}
+
+.font-display {
+  font-family: 'Playfair Display', serif;
+}
+
+.loader-ring {
+  width: 56px;
+  height: 56px;
+  border: 2px solid rgba(31, 58, 50, 0.2);
+  border-top-color: #7b4f2a;
+  border-right-color: #c9a86a;
+  border-radius: 999px;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.gallery-masonry {
+  column-count: 1;
+  column-gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .gallery-masonry {
+    column-count: 2;
+  }
+}
+
+@media (min-width: 1024px) {
+  .gallery-masonry {
+    column-count: 3;
+  }
+}
+
+.social-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 999px;
+  border: 1px solid rgba(248, 245, 240, 0.3);
+  color: #f8f5f0;
+  transition: all 0.2s ease;
+}
+
+.social-pill:hover {
+  border-color: #c9a86a;
+  color: #c9a86a;
+  transform: translateY(-2px);
+}
