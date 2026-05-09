@@ -270,6 +270,7 @@ body {
 .gallery-frame:focus-visible {
   outline: 2px solid #c6a46c;
   outline-offset: 2px;
+  box-shadow: 0 0 0 2px rgba(198, 164, 108, 0.25), 0 0 24px rgba(198, 164, 108, 0.35);
 }
 
 .gallery-frame:focus-visible .gallery-image {

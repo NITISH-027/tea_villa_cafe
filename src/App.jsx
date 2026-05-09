@@ -423,7 +423,7 @@ function App() {
             {galleryImages.map((image) => (
               <figure key={image.src} className="gallery-frame" tabIndex={0}>
                 <img src={image.src} alt={image.alt} className="gallery-image" />
-                <figcaption className="gallery-overlay">Tea Villa Cafe</figcaption>
+                <figcaption className="gallery-overlay">{image.alt}</figcaption>
               </figure>
             ))}
           </motion.div>
